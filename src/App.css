@@ -1,5 +1,5 @@
 .App{
-  background-color: #222;
+  background-color: #fff;
   min-height: 100vh;
 }
 
@@ -13,40 +13,41 @@
   width: 100%;
   display: flex;
   justify-content: flex-end;
-  color: #fff;
+  color: #000;
   margin-top: 1rem;
 }
 .btn{
   border: none;
   background: transparent;
-  color: #fff;
   font-size: 1rem;
   padding: 1rem;
   border-radius: 0.3rem;
   margin: 0rem 0.5rem;
   cursor: pointer;
-  box-shadow: 0 10px 20px 10px #00000033;
-}
-.pagination_action{
-  
+  box-shadow: 0px 10px 20px 10px #00000033;
 }
 
 .list{
+  margin: 1rem 1rem;
   list-style: none;
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-rows: repeat(auto-fit, 150px);
+  grid-gap: 1em;
 }
 
 .list_item{
   padding: 1rem;
-  margin: 1rem 0.5rem;
+  cursor: pointer;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-end ;
+  align-items: center;
   color: #fff;
   background-color: #292929;
   min-height: 150px;
   border-radius: 0.4rem;
+  opacity: 0.9;
   font-size: 1rem;
   transition: all .3s ease-in-out;
 }
@@ -54,3 +55,7 @@
 .list_item:hover {
 		box-shadow: 0 10px 20px 10px #00000033;
 	}
+
+.sub_head{
+  font-size: 1.5rem;
+}
