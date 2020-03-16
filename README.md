@@ -4,9 +4,9 @@
 
 In the project directory, you can run:
 
-## First run
-### npm install // for all requirements
-
+### First run
+#### npm install 
+for all requirements
 ## Then
 
 ### `npm start`
