@@ -10,13 +10,13 @@ class List extends Component{
 			start: 0,
 			currentPage: 1,
 			totalPages: 0,
-			data: [...Data.data]
+			data: Data.data.slice(0, 10)
 		}
 		this.colorArray = ['#e74c3c', '#2c3e50', '#7f8c8d', '#d35400', '#f1c40f', '#2c2c54', '#c0392b', '#ffb142', '#227093', '#ff793f'];
 	}
 
 	componentDidMount(){
-		let totalLength = this.state.data.length;
+		let totalLength = Data.data.length;
 		let totalPages = totalLength/this.state.size;
 		if((totalLength%this.state.size) == 0){
 			totalPages += 1;
@@ -27,15 +27,19 @@ class List extends Component{
 	}
 
 	increase = () =>{
+		let start = this.state.currentPage * this.state.size;
 		this.setState({
-			start: this.state.currentPage * this.state.size,
-			currentPage: this.state.currentPage + 1
+			start: start,
+			currentPage: this.state.currentPage + 1,
+			data: Data.data.slice(start, start + this.state.size)
 		})
 	}
 	decrease  = () =>{
+		let start = (this.state.currentPage - 2) * this.state.size
 		this.setState({
-			start : (this.state.currentPage - 2) * this.state.size,
-			currentPage: this.state.currentPage - 1
+			start : start,
+			currentPage: this.state.currentPage - 1,
+			data: Data.data.slice(start, start+this.state.size)
 		})
 	}
 
@@ -79,6 +83,37 @@ class List extends Component{
 		this.swapBox(fromBox, toBox);
 		return false;
 	}
+
+	handleDelete = (id, cloned)=>{
+
+		this.setState({
+			data: this.state.data.filter(data => {
+				if(cloned >= 0){
+					if(data.cloned == undefined){
+						return data;
+					}else{
+						return data.cloned != cloned;
+					}
+				} else {
+					if(data.cloned>=0){
+						return data;
+					}else{
+						return data.id != id;
+					}
+				}
+			} )
+		})
+	}
+
+	handleClone = (id, ind)=>{
+		let cloned = { ...this.state.data[ind]};
+		cloned['color'] = cloned.cloned >= 0 ? cloned.cloned : ind; 	
+		cloned['cloned'] = ind;
+		
+		this.setState({
+			data: [...this.state.data, cloned]
+		})
+	}
 	
 	render(){
 		return <div className="list_card">
@@ -96,21 +131,40 @@ class List extends Component{
 					</div>
 				</div>
 				<div className="list">
-					{this.state.data.slice(this.state.start, this.state.start + this.state.size).map((data, ind) => {
-						return <div style={{backgroundColor: this.colorArray[ind]}} draggable="true" onDragStart={this.startDrag({
-										id: data.id,ind
-									})} onDragOver={ this.dragOver({
+					{this.state.data.map((data, ind) => {
+						let colorIndex = data.color >=0 ? data.color : ind;
+						
+						return <div style={{ backgroundColor: this.colorArray[colorIndex] }} draggable="true" onDragStart={this.startDrag(
+									{
 										id: data.id,
-									})} onDrop={ this.onDrop({
-										id: data.id,ind
-									})} key={ind} className="list_item">
+										ind,
+									}
+								)} onDragOver={this.dragOver({
+									id: data.id,
+								})} onDrop={this.onDrop({
+									id: data.id,
+									ind,
+								})} key={ind} className="list_item">
 								<span className="list_item_id">
-								 <span className="sub_head">ID:</span>	{data.id}
+									<span className="sub_head">ID:</span> {data.id}
 								</span>
 
 								<span className="list_item_rule">
-								 <span className="sub_head">Rule Name:</span>	{data.ruleName.split('_').join(' ')}
+									<span className="sub_head">
+										Rule Name:
+									</span> {data.ruleName.split('_').join(' ')}
 								</span>
+								{data.cloned || data.cloned >= 0 ? <span>
+											<span className="sub_head">Cloned:</span>: {data.cloned}
+										</span> : ''}
+								<div className="actions">
+									<button onClick={() => this.handleDelete(data.id, data.cloned)} className="actionbtn">
+										Delete
+									</button>
+									<button onClick={() => this.handleClone(data.id, ind)} className="actionbtn">
+										Clone
+									</button>
+								</div>
 							</div>;
 					})}
 				</div>
